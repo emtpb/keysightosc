@@ -1,7 +1,14 @@
 import pyvisa as vi
 import numpy as np
+from collections import namedtuple
 
 busy_resources = {}
+
+device = namedtuple('devices', ['vendorId', 'productId'])
+valid_devices = [
+    device(0x2A8D, 0x1787), # Keysight manufacturer ID: 0x2A8D, product ID for DSOX1102A: 0x1787
+    device(0x0957, 0x179A), # Agilent manufacturer ID: 0x0957, product ID for DSOX2004A: 0x179A
+]
 
 def list_connected_devices():
     """List all connected VISA device addresses."""
@@ -49,13 +56,12 @@ def list_connected_keysight_oscilloscopes():
     device_list = []
     for res_num in range(len(resource_list)):
         parts = resource_list[res_num].split('::')
-        # Keysight manufacturer ID: 10893, Keysight model code for DSOX1102A: 6023
-        if len(parts) > 3 and 'USB' in parts[0] and (parts[1] == '10893' or parts[1] == '0x2A8D') and \
-                (parts[2] == '6023' or parts[2] == '0x1787'):
+        # Check if devices is in device list
+        if len(parts) > 3 and 'USB' in parts[0] and \
+                (int(parts[1], 0), int(parts[2], 0)) in valid_devices:
             device = get_device_id(resource_list[res_num])
             if device is not None:
                 device_list.append(device)
-
     return device_list
 
 
@@ -75,10 +81,10 @@ class Oscilloscope:
         # find the resource or set it to None, if the instr_id is not in the list
         self._resource_manager = vi.ResourceManager()
         resource_list = self._resource_manager.list_resources()
-        # Keysight manufacturer id: 10893
+        # Find resource or first devices with a valid vendor ID
         visa_name = next((item for item in resource_list if item == resource or
-                          ('USB' in item and item.split('::')[3] == resource and
-                           (item.split('::')[1] == '10893' or item.split('::')[1] == '0x2A8D'))), None)
+                        ('USB' in item and item.split('::')[3] == resource and
+                        (int(item.split('::')[1], 0) in [d.vendorId for d in valid_devices]))), None)
 
         connected_resource = None
         if visa_name is not None:
@@ -88,9 +94,8 @@ class Oscilloscope:
             connected = False
             for res_num in range(len(resource_list)):
                 parts = resource_list[res_num].split('::')
-                # Keysight manufacturer ID: 10893, Keysight model code for DSOX1102A: 6023
-                if len(parts) > 3 and 'USB' in parts[0] and (parts[1] == '10893' or parts[1] == '0x2A8D') and \
-                        (parts[2] == '6023' or parts[2] == '0x1787'):
+                if len(parts) > 3 and 'USB' in parts[0] and \
+                        (int(parts[1], 0), int(parts[2], 0)) in valid_devices:
                     try:
                         self._instrument = self._resource_manager.open_resource(resource_list[res_num])
                         connected = True
