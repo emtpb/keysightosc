@@ -121,7 +121,7 @@ class Oscilloscope:
         # Increase timeout to 10 seconds for transfer of long signals.
         self.visa_timeout = 10
 
-        self.channels = [Channel(self, 1), Channel(self, 2)]
+        self.channels = [Channel(self, 1), Channel(self, 2), Channel(self, 3), Channel(self, 4)]
 
     def _clear(self):
         """
@@ -226,7 +226,12 @@ class Oscilloscope:
         self._write('*RST')
         self.channels[0].attenuation = 1
         self.channels[1].attenuation = 1
-
+        try:
+            self.channels[2].attenuation = 1
+            self.channels[3].attenuation = 1
+        except RuntimeError:
+            pass
+        
     def run(self):
         """Start data acquisition."""
         self._write(':RUN')
@@ -615,8 +620,7 @@ class Oscilloscope:
         """Set the source of the FFT.
 
         Args:
-            source (int): Source of the FFT. Either 1 for CHANnel1 or 2 for
-                          CHANnel2.
+            source (int): Source of the FFT. Can be any channel
         """
         self._write(":FFT:SOURce1 CHANnel{}".format(source))
 
@@ -791,7 +795,7 @@ class Oscilloscope:
     def get_math_function_source(self, source):
         """Get a function source. There are two sources
         (source 1 and source 2). These sources are used for the
-        math_functions and can be either channel 1 or channel 2.
+        math_functions and can be any channel.
 
         Args:
             source(int): Source to get.
@@ -800,8 +804,8 @@ class Oscilloscope:
 
     def set_math_function_source(self, source, channel):
         """Set a math source. There are two sources (source 1 and source 2).
-        These sources are used for the math_functions and can be channel 1 or
-        channel 2. The math_functions 'ADD', 'SUBT', 'MULT' and 'DIV' use
+        These sources are used for the math_functions and can any channel.
+        The math_functions 'ADD', 'SUBT', 'MULT' and 'DIV' use
         source 1 and source 2. The math_functions 'FFT', 'FFTPhase', and
         'LOWPass' use only source 1.
 
