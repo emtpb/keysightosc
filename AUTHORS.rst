@@ -18,6 +18,7 @@ Development Lead
 Contributors
 ============
 
+* Tom Nellius
 * Kevin Koch
 * Bruno Mecke
 * Hanna Schmiegel
