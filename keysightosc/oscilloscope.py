@@ -8,6 +8,7 @@ device = namedtuple('devices', ['vendorId', 'productId'])
 valid_devices = [
     device(0x2A8D, 0x1787), # Keysight manufacturer ID: 0x2A8D, product ID for DSOX1102A: 0x1787
     device(0x0957, 0x179A), # Agilent manufacturer ID: 0x0957, product ID for DSOX2004A: 0x179A
+    device(0x2A8D, 0x0387), # Keysight manufacturer ID: 0x2A8D, prodct ID for DSOX1202A: 0x2A8D
 ]
 
 def list_connected_devices():
