@@ -9,6 +9,14 @@ This project follows the guidelines of `Keep a changelog`_ and adheres to
 .. _Semantic versioning: https://semver.org/
 
 
+`0.1.2`_ - 2024-11-13
+=====================
+
+Added
+-----
+* Suppport for DSOX1202A
+
+
 `0.1.1`_ - 2024-09-24
 =====================
 
