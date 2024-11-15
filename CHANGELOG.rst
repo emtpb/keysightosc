@@ -35,5 +35,6 @@ Added
 
 
 .. _Unreleased: https://github.com/emtpb/keysightosc
-.. _0.1.0: https://github.com/emtpb/keysightosc/releases/tag/0.1.0
+.. _0.1.2: https://github.com/emtpb/keysightosc/releases/tag/0.1.2
 .. _0.1.1: https://github.com/emtpb/keysightosc/releases/tag/0.1.1
+.. _0.1.0: https://github.com/emtpb/keysightosc/releases/tag/0.1.0
