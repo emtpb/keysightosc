@@ -121,7 +121,10 @@ class Oscilloscope:
         self.visa_query_delay = 0.2
         # Increase timeout to 10 seconds for transfer of long signals.
         self.visa_timeout = 10
-
+        # Set write and read termination
+        self._instrument.read_termination = '\n'
+        self._instrument.write_termination = '\n'
+        
         self.channels = [Channel(self, 1), Channel(self, 2), Channel(self, 3), Channel(self, 4)]
 
     def _clear(self):
@@ -362,7 +365,7 @@ class Oscilloscope:
         Args:
             num (int): The number of points to be transferred.
         """
-        if (self.waveform_points_mode == 'RAW\n') or (self.waveform_points_mode == 'MAX\n'):
+        if (self.waveform_points_mode == 'RAW') or (self.waveform_points_mode == 'MAX'):
             self.stop()
         if self.waveform_count_max < num:
             num = self.waveform_count_max
@@ -381,7 +384,7 @@ class Oscilloscope:
             int: Maximum number of waveform points.
         """
 
-        if self.waveform_points_mode == 'NORM\n':
+        if self.waveform_points_mode == 'NORM':
             return 62500
         else:
             return self._acquire_points()
@@ -819,7 +822,7 @@ class Oscilloscope:
     @property
     def white_image_bg(self):
         """Image background color."""
-        return self._query(':HARDcopy:INKSaver?') == '1\n'
+        return self._query(':HARDcopy:INKSaver?') == '1'
 
     @white_image_bg.setter
     def white_image_bg(self, value):
