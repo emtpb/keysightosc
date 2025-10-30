@@ -18,6 +18,7 @@ Development Lead
 Contributors
 ============
 
+* Dennis Zilke
 * Tom Nellius
 * Kevin Koch
 * Bruno Mecke

@@ -9,6 +9,14 @@ This project follows the guidelines of `Keep a changelog`_ and adheres to
 .. _Semantic versioning: https://semver.org/
 
 
+`0.1.3`_ - 2025-10-30
+=====================
+
+Fixed
+-----
+* Missing read and write termination
+
+
 `0.1.2`_ - 2024-11-13
 =====================
 
@@ -35,6 +43,7 @@ Added
 
 
 .. _Unreleased: https://github.com/emtpb/keysightosc
+.. _0.1.3: https://github.com/emtpb/keysightosc/releases/tag/0.1.3
 .. _0.1.2: https://github.com/emtpb/keysightosc/releases/tag/0.1.2
 .. _0.1.1: https://github.com/emtpb/keysightosc/releases/tag/0.1.1
 .. _0.1.0: https://github.com/emtpb/keysightosc/releases/tag/0.1.0
