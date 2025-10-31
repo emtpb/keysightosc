@@ -12,6 +12,10 @@ This project follows the guidelines of `Keep a changelog`_ and adheres to
 `Unreleased`_
 =============
 
+Fixed
+-----
+* Minor documentation issues
+
 Changed
 -------
 * Replace setup.py by pyproject.toml
@@ -30,7 +34,7 @@ Fixed
 
 Added
 -----
-* Suppport for DSOX1202A
+* Support for DSOX1202A
 
 
 `0.1.1`_ - 2024-09-24
@@ -38,7 +42,7 @@ Added
 
 Added
 -----
-* Suppport for DSOX2004A
+* Support for DSOX2004A
 * General support for 4-channel oscilloscopes
 
 
