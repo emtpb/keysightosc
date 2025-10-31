@@ -9,6 +9,14 @@ This project follows the guidelines of `Keep a changelog`_ and adheres to
 .. _Semantic versioning: https://semver.org/
 
 
+`Unreleased`_
+=============
+
+Changed
+-------
+* Replace setup.py by pyproject.toml
+
+
 `0.1.3`_ - 2025-10-30
 =====================
 
