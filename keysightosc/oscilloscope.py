@@ -32,9 +32,14 @@ def get_device_id(resource):
         if resource not in busy_resources:
             rm = vi.ResourceManager()
             device = rm.open_resource(resource)
-            idn = device.query('*IDN?')
-            parts = idn.split(',')
-            resource_info = {'Manufacturer': parts[0], 'Model': parts[1], 'Serial Number': parts[2]}
+            idn = device.query("*IDN?")
+            parts = idn.split(",")
+            resource_info = {
+                "Resource": resource,
+                "Manufacturer": parts[0],
+                "Model": parts[1],
+                "Serial Number": parts[2],
+            }
             busy_resources[resource] = resource_info
             return resource_info
         else:
@@ -69,48 +74,68 @@ def list_connected_keysight_oscilloscopes():
 class Oscilloscope:
     """Interface for a Keysight digital storage oscilloscope."""
 
-    def __init__(self, resource=None):
-        """Class constructor. Open the connection to the instrument using the
-        VISA interface.
+    def __init__(self, resource: str | None = None, serial_number: str | None = None):
+        """Initialize the instrument connection using the VISA interface.
+
+        The device selection follows this precedence:
+
+        1. If ``resource`` is specified, it is used to connect to the instrument.
+           In this case, ``serial_number`` is ignored.
+        2. If only ``serial_number`` is specified, the connected keysight device
+           with the matching serial number is selected.
+        3. If neither is specified, the first detected Keysight device is used.
 
         Args:
-            resource (str): Resource name of the instrument or product ID.
-                            If not specified, first connected device returned by visa.
-                            ResourceManager's list_resources method is used.
+            resource (str, optional): VISA resource name of the instrument. If
+                specified, this takes precedence over ``serial_number``. If not
+                specified, the device is selected using ``serial_number`` or, if
+                that is also unspecified, the first device returned by
+                ``ResourceManager.list_resources()``.
+
+            serial_number (str, optional): Serial number of the Keysight device
+                to connect to. This parameter is ignored if ``resource`` is
+                specified.
+
+        Raises:
+            RuntimeError: If no Keysight device is detected, or if the device
+                specified by ``resource`` or ``serial_number`` cannot be found.
         """
 
-        # find the resource or set it to None, if the instr_id is not in the list
-        self._resource_manager = vi.ResourceManager()
-        resource_list = self._resource_manager.list_resources()
-        # Find resource or first devices with a valid vendor ID
-        visa_name = next((item for item in resource_list if item == resource or
-                        ('USB' in item and item.split('::')[3] == resource and
-                        (int(item.split('::')[1], 0) in [d.vendorId for d in valid_devices]))), None)
+        visa_name = ""
+        if resource:
+            visa_name = resource
+        else:
+            possible_devices = list_connected_keysight_oscilloscopes()
+
+            if not possible_devices:
+                raise RuntimeError("Could not find any keysight oscilloscopes")
+
+            if serial_number:
+                not_found = True
+                for device in possible_devices:
+                    if device["Serial Number"] == serial_number:
+                        visa_name = device["Resource"]
+                        not_found = False
+                        break
+                if not_found:
+                    raise RuntimeError("Could not find specified Keysight device")
+            else:
+                # Fallback to first detected keysight oscilloscope
+                visa_name = possible_devices[0]["Resource"]
 
         connected_resource = None
-        if visa_name is not None:
-            self._instrument = self._resource_manager.open_resource(visa_name)
-            connected_resource = visa_name
-        else:
-            connected = False
-            for res_num in range(len(resource_list)):
-                parts = resource_list[res_num].split('::')
-                if len(parts) > 3 and 'USB' in parts[0] and \
-                        (int(parts[1], 0), int(parts[2], 0)) in valid_devices:
-                    try:
-                        self._instrument = self._resource_manager.open_resource(resource_list[res_num])
-                        connected = True
-                        connected_resource = resource_list[res_num]
-                        break
-                    except vi.errors.VisaIOError:
-                        pass
-            if not connected:
-                raise RuntimeError("Could not find any keysight devices")
+        self._resource_manager = vi.ResourceManager()
+        self._instrument = self._resource_manager.open_resource(visa_name)
+        connected_resource = visa_name
 
         if connected_resource is not None:
-            idn = self._instrument.query('*IDN?')
-            parts = idn.split(',')
-            resource_info = {'Manufacturer': parts[0], 'Model': parts[1], 'Serial Number': parts[2]}
+            idn = self._instrument.query("*IDN?")
+            parts = idn.split(",")
+            resource_info = {
+                "Manufacturer": parts[0],
+                "Model": parts[1],
+                "Serial Number": parts[2],
+            }
             busy_resources[connected_resource] = resource_info
 
         # Clear device to prevent "Query INTERRUPTED" errors when the device was plugged off before
