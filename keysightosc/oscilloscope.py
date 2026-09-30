@@ -193,6 +193,16 @@ class Oscilloscope:
         return self._identification_number.split(',')[1]
 
     @property
+    def serial_number(self):
+        """
+        Get the device serial number.
+
+        Returns:
+            str: The device serial number
+        """
+        return self._identification_number.split(",")[2]
+
+    @property
     def visa_query_delay(self):
         """Visa interface query_delay in seconds."""
         return self._instrument.query_delay
