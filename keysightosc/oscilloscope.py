@@ -90,7 +90,7 @@ class Oscilloscope:
                 specified, this takes precedence over ``serial_number``. If not
                 specified, the device is selected using ``serial_number`` or, if
                 that is also unspecified, the first device returned by
-                ``ResourceManager.list_resources()``.
+                ``list_connected_keysight_oscilloscopes()``.
 
             serial_number (str, optional): Serial number of the Keysight device
                 to connect to. This parameter is ignored if ``resource`` is
