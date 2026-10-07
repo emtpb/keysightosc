@@ -132,6 +132,7 @@ class Oscilloscope:
             idn = self._instrument.query("*IDN?")
             parts = idn.split(",")
             resource_info = {
+                "Resource": resource,
                 "Manufacturer": parts[0],
                 "Model": parts[1],
                 "Serial Number": parts[2],
@@ -149,7 +150,7 @@ class Oscilloscope:
         # Set write and read termination
         self._instrument.read_termination = '\n'
         self._instrument.write_termination = '\n'
-        
+
         self.channels = [Channel(self, 1), Channel(self, 2), Channel(self, 3), Channel(self, 4)]
 
     def _clear(self):
